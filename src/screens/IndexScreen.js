@@ -5,11 +5,10 @@ import { FontAwesome, AntDesign } from '@expo/vector-icons';
 
 
 const indexScreen = ({navigation}) => {
-    const {state, addBlogPost, deleteBlogPost} = useContext(Context)
+    const {state, deleteBlogPost} = useContext(Context)
         
     return (
         <View>
-            <Button title = 'Add Post' onPress = {addBlogPost}/>
             <FlatList
             data={state}
             keyExtractor={(blog) => blog.title}

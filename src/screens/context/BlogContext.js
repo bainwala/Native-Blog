@@ -1,4 +1,5 @@
 import React, {useState, useReducer} from 'react';
+import { call } from 'react-native-reanimated';
 import createDataContext from './createDataContext';
 
 const blogReducer = (state, action) => {
@@ -10,16 +11,22 @@ const blogReducer = (state, action) => {
         case 'add_blogpost': 
             return [...state, {
                 id: Math.floor(Math.random() * 9999),
-                title: `Blog Post #${state.length + 1}`
+                title: action.payload.title,
+                content: action.payload.content
             }]
+        case 'edit_blogpost':
+            return state.map((blog) => {
+                return (blog.id === action.payload.id)? action.payload : blog
+            })
         default:
             return state
     }
 }
    
 const addBlogPost = dispatch => {
-    return () => {
-        dispatch({type: 'add_blogpost'}) 
+    return (title, content, callback) => {
+        dispatch({type: 'add_blogpost', payload: {title, content}})
+        callback(); 
     }
 }
 
@@ -29,7 +36,14 @@ const deleteBlogPost = dispatch => {
     }
 }
 
-export const {Context, Provider} = createDataContext(blogReducer, {addBlogPost, deleteBlogPost}, [])
+const editBlogPost = dispatch => {
+    return (id, title, content, callback) => {
+        dispatch({type: 'edit_blogpost', payload: {id, title, content}})
+        callback();
+    }
+}
+
+export const {Context, Provider} = createDataContext(blogReducer, {addBlogPost, deleteBlogPost, editBlogPost}, [])
 
  
 
